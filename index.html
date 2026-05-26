@@ -157,10 +157,18 @@ input.mrange{width:110px;accent-color:var(--accent)}
       <span class="save-badge" id="save-badge">✓ Guardado</span>
       <button class="btn" onclick="window.print()">
         <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Imprimir / PDF
+        Imprimir
+      </button>
+      <button class="btn" onclick="exportarPDF()">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        PDF
+      </button>
+      <button class="btn" onclick="exportarCSV()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        CSV
       </button>
       <button class="btn primary" onclick="exportarTexto()">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         Copiar lista
       </button>
     </div>
@@ -627,6 +635,129 @@ loadData();
 renderIntang();
 renderSections();
 calcUpdate();
+
+function exportarCSV(){
+  const intang = getIntangTotal();
+  const rows = [['Categoría','Servicio','Tipo','Precio base','Total con intangibles','Nota']];
+  data.filter(c=>!c.isIntangVals).forEach(cat=>{
+    if(cat.agencies){
+      AGENCIES.forEach(ag=>{
+        const p = cat.agencyPrices?.[ag]||'';
+        rows.push([cat.title, ag, 'Costo agencia', p?parseFloat(p).toFixed(2):'', '', 'Costo directo sin margen']);
+      });
+    }
+    cat.items.forEach(item=>{
+      const tag = item.tag&&TAGS[item.tag]?TAGS[item.tag].label:'';
+      const p = cat.prices[item.id]||'';
+      const base = parseFloat(p)||0;
+      const total = p?(base+intang).toFixed(2):'';
+      rows.push([cat.title, item.name, tag, p?base.toFixed(2):'', total, item.sub||'']);
+    });
+  });
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const bom = '\uFEFF';
+  const blob = new Blob([bom+csv],{type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='automart_lista_precios.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function exportarPDF(){
+  const intang = getIntangTotal();
+  const fmt = v => v?'$'+parseFloat(v).toFixed(2):'—';
+  const fmtTotal = (p,i) => p?(parseFloat(p)+i).toFixed(2):'—';
+
+  const printWin = window.open('','_blank','width=900,height=700');
+  const intangCat = data.find(c=>c.id==='intang_vals');
+
+  let html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/>
+  <title>Lista de Precios — AutoMart</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Arial,sans-serif;font-size:12px;color:#1a1916;background:#fff;padding:32px}
+    h1{font-size:18px;font-weight:600;margin-bottom:2px}
+    .sub{font-size:11px;color:#6b6963;margin-bottom:20px}
+    .intang-box{background:#eef5f1;border:1px solid #c3ddd0;border-radius:6px;padding:12px 16px;margin-bottom:16px}
+    .intang-box h3{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#0f3d26;margin-bottom:8px}
+    .intang-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .intang-item{font-size:11px;color:#1a5c3a;padding:4px 0}
+    .notice{background:#fdf3dc;border:1px solid #e8c870;border-radius:6px;padding:8px 14px;font-size:11px;color:#7a4f00;margin-bottom:16px}
+    table{width:100%;border-collapse:collapse;margin-bottom:16px}
+    th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#6b6963;padding:6px 8px;text-align:left;border-bottom:2px solid #e4e2db;background:#f7f6f2}
+    td{font-size:11px;padding:6px 8px;border-bottom:1px solid #f0eee8;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    .cat-row td{background:#f7f6f2;font-weight:600;font-size:11px;color:#1a1916;padding:8px 8px 4px}
+    .tag{display:inline-block;font-size:9px;padding:1px 6px;border-radius:99px;font-weight:600}
+    .tag-orig{background:#eef5f1;color:#0f3d26}
+    .tag-aft{background:#fdf3dc;color:#7a4f00}
+    .tag-univ{background:#f0efeb;color:#4a4844}
+    .tag-cost{background:#fdf0f0;color:#8b1a1a}
+    .price{font-family:monospace;font-weight:600;text-align:right}
+    .total{font-family:monospace;font-weight:600;color:#1a5c3a;text-align:right}
+    .footer{margin-top:24px;padding-top:12px;border-top:1px solid #e4e2db;font-size:10px;color:#a09d97;display:flex;justify-content:space-between}
+    @media print{body{padding:16px}.no-print{display:none}}
+  </style></head><body>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <div style="width:36px;height:36px;background:#1a5c3a;border-radius:6px;display:flex;align-items:center;justify-content:center">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+    </div>
+    <div><h1>Lista de precios — Cerrajería automotriz</h1>
+    <div class="sub">Proveedor para AutoMart &nbsp;·&nbsp; Todos los precios en USD &nbsp;·&nbsp; ${new Date().toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'})}</div></div>
+  </div>
+
+  <div class="intang-box">
+    <h3>Lo que incluye cada llave que hacemos</h3>
+    <div class="intang-grid">
+      <div class="intang-item">✓ Garantía limitada de 3 años</div>
+      <div class="intang-item">✓ Servicio a domicilio (agencias y talleres)</div>
+      <div class="intang-item">✓ Mismo día o siguiente</div>
+      <div class="intang-item">✓ Procuración y entrega de llave</div>
+    </div>
+  </div>
+
+  <div class="notice">⚠ PINs de agencia y Programación dealer: costos directos pagados a la agencia. Sin margen de ganancia.</div>
+
+  <table><thead><tr>
+    <th style="width:40%">Servicio</th>
+    <th>Tipo</th>
+    <th style="text-align:right">Precio base</th>
+    <th style="text-align:right">Total c/ intangibles</th>
+  </tr></thead><tbody>`;
+
+  data.filter(c=>!c.isIntangVals).forEach(cat=>{
+    html+=`<tr class="cat-row"><td colspan="4">${cat.title}</td></tr>`;
+    if(cat.agencies){
+      AGENCIES.forEach(ag=>{
+        const p=cat.agencyPrices?.[ag]||'';
+        html+=`<tr><td>${ag}</td><td><span class="tag tag-cost">Costo agencia</span></td>
+        <td class="price">${fmt(p)}</td><td class="price">—</td></tr>`;
+      });
+    }
+    cat.items.forEach(item=>{
+      const tag=item.tag&&TAGS[item.tag]?`<span class="tag ${TAGS[item.tag].cls}">${TAGS[item.tag].label}</span>`:'';
+      const p=cat.prices[item.id]||'';
+      const sub=item.sub?`<div style="font-size:10px;color:#6b6963">${item.sub}</div>`:'';
+      html+=`<tr><td>${item.name}${sub}</td><td>${tag}</td>
+      <td class="price">${fmt(p)}</td>
+      <td class="total">${p?'$'+fmtTotal(p,intang):'—'}</td></tr>`;
+    });
+  });
+
+  html+=`</tbody></table>
+  <div class="footer">
+    <span>onewaykeys.github.io/lista-de-precios-automart</span>
+    <span>Generado el ${new Date().toLocaleString('es-MX')}</span>
+  </div>
+  <div class="no-print" style="text-align:center;margin-top:20px">
+    <button onclick="window.print()" style="font-size:13px;padding:8px 20px;background:#1a5c3a;color:#fff;border:none;border-radius:6px;cursor:pointer">Imprimir / Guardar como PDF</button>
+  </div>
+  </body></html>`;
+
+  printWin.document.write(html);
+  printWin.document.close();
+  printWin.onload = ()=>{ printWin.focus(); setTimeout(()=>printWin.print(),400); };
+}
 </script>
 </body>
 </html>
