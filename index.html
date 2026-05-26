@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lista de Precios — Cerrajería AutoMart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --border:#e4e2db;
+  --border2:#d0cec6;
+  --text:#1a1916;
+  --muted:#6b6963;
+  --hint:#a09d97;
+  --accent:#1a5c3a;
+  --accent-bg:#eef5f1;
+  --accent-text:#0f3d26;
+  --amber:#7a4f00;
+  --amber-bg:#fdf3dc;
+  --red:#8b1a1a;
+  --red-bg:#fdf0f0;
+  --tag-orig-bg:#eef5f1;--tag-orig:#0f3d26;
+  --tag-aft-bg:#fdf3dc;--tag-aft:#7a4f00;
+  --tag-univ-bg:#f0efeb;--tag-univ:#4a4844;
+  --tag-cost-bg:#fdf0f0;--tag-cost:#8b1a1a;
+  --radius:6px;--radius-lg:10px;
+  --font:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+
+.page{max-width:860px;margin:0 auto;padding:32px 24px 64px}
+
+.header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.logo-row{display:flex;align-items:center;gap:14px}
+.logo-box{width:44px;height:44px;background:var(--accent);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-box svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.header-text h1{font-size:17px;font-weight:500;letter-spacing:-.01em}
+.header-text p{font-size:12px;color:var(--muted);margin-top:2px}
+.header-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn{font-family:var(--font);font-size:12px;font-weight:500;padding:7px 14px;border-radius:var(--radius);cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text);display:flex;align-items:center;gap:6px;white-space:nowrap;transition:background .15s}
+.btn:hover{background:var(--bg)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{opacity:.88}
+.btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.save-badge{font-size:11px;color:var(--accent);background:var(--accent-bg);padding:4px 10px;border-radius:99px;font-weight:500;opacity:0;transition:opacity .3s}
+.save-badge.show{opacity:1}
+
+.intang-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:24px}
+.intang-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.intang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.intang-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--accent-bg);border-radius:var(--radius)}
+.intang-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px}
+.intang-name{font-size:13px;color:var(--accent-text);font-weight:500}
+.intang-sub{font-size:11px;color:#2d7a52;margin-top:1px}
+
+.intang-values{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.intang-vals-title{font-size:11px;color:var(--muted);margin-bottom:8px}
+.intang-val-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
+.intang-val-row:last-child{border-bottom:none}
+.intang-val-name{font-size:12px;color:var(--text)}
+.pf{display:flex;align-items:center;gap:3px}
+.ps{font-size:12px;color:var(--muted)}
+input.pi{width:76px;font-size:12px;font-weight:500;font-family:var(--mono);text-align:right;border:1px solid var(--border);border-radius:var(--radius);padding:3px 7px;background:var(--bg);color:var(--text)}
+input.pi:focus{outline:none;border-color:var(--accent);background:#fff}
+input.pi::placeholder{color:var(--hint);font-weight:400}
+
+.notice{background:var(--amber-bg);border:1px solid #e8c870;border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:20px;line-height:1.6}
+.notice strong{font-weight:500}
+
+.calc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;margin-bottom:24px}
+.calc-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.calc-selects{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.calc-label{font-size:11px;color:var(--muted);margin-bottom:4px}
+select.cs{width:100%;font-family:var(--font);font-size:13px;border:1px solid var(--border);border-radius:var(--radius);padding:7px 10px;background:var(--bg);color:var(--text)}
+select.cs:focus{outline:none;border-color:var(--accent)}
+.calc-result{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cr-box{background:var(--bg);border-radius:var(--radius);padding:10px 12px}
+.cr-label{font-size:11px;color:var(--muted);margin-bottom:3px}
+.cr-val{font-size:20px;font-weight:500;font-family:var(--mono);color:var(--text)}
+.cr-val.total{color:var(--accent)}
+.calc-note{font-size:11px;color:var(--hint);margin-top:8px}
+
+.section{margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.sec-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:var(--bg);border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.sec-left{display:flex;align-items:center;gap:8px}
+.sec-title{font-size:12px;font-weight:500;color:var(--text)}
+.sec-note{font-size:11px;color:var(--muted);margin-top:1px}
+.tag{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.tag-orig{background:var(--tag-orig-bg);color:var(--tag-orig)}
+.tag-aft{background:var(--tag-aft-bg);color:var(--tag-aft)}
+.tag-univ{background:var(--tag-univ-bg);color:var(--tag-univ)}
+.tag-cost{background:var(--tag-cost-bg);color:var(--tag-cost)}
+.chevron{font-size:14px;color:var(--muted);transition:transform .2s;display:inline-block}
+.chevron.open{transform:rotate(180deg)}
+.sec-body{padding:0 16px 12px}
+.row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.row:last-of-type{border-bottom:none}
+.svc-name{font-size:13px;color:var(--text)}
+.svc-sub{font-size:11px;color:var(--muted)}
+input.price{width:80px;font-size:13px;font-weight:500;font-family:var(--mono);text-align:right;border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;background:var(--bg);color:var(--text)}
+input.price:focus{outline:none;border-color:var(--accent);background:#fff}
+input.price::placeholder{color:var(--hint);font-weight:400}
+input.price.cost{background:var(--red-bg);border-color:#e8b0b0}
+.del{font-size:11px;color:var(--hint);background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:4px;font-family:var(--font)}
+.del:hover{color:var(--red);background:var(--red-bg)}
+.add-row{display:flex;gap:8px;align-items:center;padding:8px 0 2px}
+input.add-inp{flex:1;font-size:12px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--radius);padding:5px 10px;background:var(--bg);color:var(--text)}
+input.add-inp:focus{outline:none;border-color:var(--accent)}
+.add-btn{font-family:var(--font);font-size:12px;padding:5px 12px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface);color:var(--text);cursor:pointer;white-space:nowrap}
+.add-btn:hover{background:var(--bg)}
+.agency-row{display:grid;grid-template-columns:64px 1fr auto auto;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.agency-row:last-of-type{border-bottom:none}
+.ag-name{font-size:13px;font-weight:500;color:var(--text)}
+.ag-note{font-size:11px;color:var(--hint)}
+.mant-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.mant-row:last-of-type{border-bottom:none}
+.mant-name{flex:1;font-size:13px;color:var(--text)}
+.mant-sub{font-size:11px;color:var(--muted)}
+input.mrange{width:110px;accent-color:var(--accent)}
+.mval{font-size:13px;font-weight:500;font-family:var(--mono);color:var(--text);min-width:52px;text-align:right}
+.range-bounds{font-size:11px;color:var(--hint)}
+
+.footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.footer-note{font-size:11px;color:var(--hint)}
+
+@media print{
+  body{background:#fff}
+  .page{max-width:100%;padding:16px}
+  .header-actions,.add-row,.del,.footer,.save-badge{display:none!important}
+  .section{break-inside:avoid;border:1px solid #ddd}
+  input.price,input.pi,input.mrange{border:none;background:transparent;font-weight:500}
+  .mval{display:block}
+  .calc-card{display:none}
+  .btn{display:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="logo-row">
+      <div class="logo-box">
+        <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </div>
+      <div class="header-text">
+        <h1>Lista de precios — Cerrajería automotriz</h1>
+        <p>Proveedor para AutoMart &nbsp;·&nbsp; Todos los precios en USD</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="save-badge" id="save-badge">✓ Guardado</span>
+      <button class="btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Imprimir / PDF
+      </button>
+      <button class="btn primary" onclick="exportarTexto()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Copiar lista
+      </button>
+    </div>
+  </div>
+
+  <div class="intang-card">
+    <div class="intang-title">Lo que incluye cada llave que hacemos</div>
+    <div class="intang-grid">
+      <div class="intang-item">
+        <div class="intang-dot"></div>
+        <div>
+          <div class="intang-name">Garantía limitada de 3 años</div>
+          <div class="intang-sub">Limitada en mano de obra y programación</div>
+        </div>
+      </div>
+      <div class="intang-item">
+        <div class="intang-dot"></div>
+        <div>
+          <div class="intang-name">Servicio a domicilio</div>
+          <div class="intang-sub">Agencias y talleres mecánicos</div>
+        </div>
+      </div>
+      <div class="intang-item">
+        <div class="intang-dot"></div>
+        <div>
+          <div class="intang-name">Mismo día o siguiente</div>
+          <div class="intang-sub">Procuración, entrega e instalación</div>
+        </div>
+      </div>
+      <div class="intang-item">
+        <div class="intang-dot"></div>
+        <div>
+          <div class="intang-name">Procuración y entrega de llave</div>
+          <div class="intang-sub">Nosotros conseguimos y entregamos</div>
+        </div>
+      </div>
+    </div>
+    <div class="intang-values">
+      <div class="intang-vals-title">Valor de intangibles por servicio (se suman al precio base):</div>
+      <div id="intang-rows"></div>
+    </div>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-title">Calculadora rápida</div>
+    <div class="calc-selects">
+      <div>
+        <div class="calc-label">Categoría</div>
+        <select class="cs" id="calc-cat" onchange="calcSvcs()"><option value="">— selecciona —</option></select>
+      </div>
+      <div>
+        <div class="calc-label">Servicio</div>
+        <select class="cs" id="calc-svc" onchange="calcUpdate()"><option value="">— selecciona servicio —</option></select>
+      </div>
+    </div>
+    <div class="calc-result">
+      <div class="cr-box">
+        <div class="cr-label">Precio de la llave</div>
+        <div class="cr-val" id="res-base">—</div>
+      </div>
+      <div class="cr-box">
+        <div class="cr-label">Total con intangibles</div>
+        <div class="cr-val total" id="res-total">—</div>
+      </div>
+    </div>
+    <div class="calc-note">El total incluye el valor de los intangibles configurados arriba.</div>
+  </div>
+
+  <div class="notice">
+    <strong>PINs de agencia y Programación dealer:</strong> Estos son costos que nosotros pagamos a la agencia. El precio que el cliente ve es el costo real que nos cobran, sin margen adicional.
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="footer">
+    <div class="footer-note">Los datos se guardan automáticamente en este archivo al hacer cambios.</div>
+    <button class="btn" onclick="limpiar()">Borrar todos los precios</button>
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'automart_prices_v2';
+const AGENCIES = ['VW','Nissan','Ford','GM','Dodge'];
+const TAGS = {
+  orig:{label:'Original',cls:'tag-orig'},
+  aft:{label:'Aftermarket',cls:'tag-aft'},
+  univ:{label:'Universal',cls:'tag-univ'},
+  cost:{label:'Costo agencia',cls:'tag-cost'}
+};
+let uid = 3000;
+
+const DEFAULT_DATA = [
+  {
+    id:'intang_vals', isIntangVals:true,
+    items:[
+      {id:'iv1',name:'Garantía limitada de 3 años'},
+      {id:'iv2',name:'Servicio a domicilio'},
+      {id:'iv3',name:'Mismo día o siguiente'},
+      {id:'iv4',name:'Procuración y entrega'},
+    ],
+    prices:{}
+  },
+  {
+    id:'copia',title:'Copia de llave',note:'Cuando ya existe una llave hecha — solo se reproduce.',
+    open:true,
+    items:[
+      {id:'c1',name:'Llave mecánica sin chip',sub:'Corte directo',tag:'aft'},
+      {id:'c2',name:'Llave mecánica sin chip',sub:'Llave original de agencia',tag:'orig'},
+      {id:'c3',name:'Llave con transponder / chip',sub:'Sin carcasa',tag:'aft'},
+      {id:'c4',name:'Llave con transponder / chip',sub:'Llave original de agencia con chip',tag:'orig'},
+      {id:'c5',name:'Llave de hoja abatible (navaja)',tag:'aft'},
+      {id:'c6',name:'Llave de hoja abatible (navaja)',tag:'orig'},
+      {id:'c7',name:'Llave de emergencia (blade)',sub:'Compatible múltiples marcas',tag:'univ'},
+      {id:'c8',name:'Control remoto / fob',sub:'Con carcasa y botones',tag:'aft'},
+      {id:'c9',name:'Control remoto / fob',sub:'Fob de agencia',tag:'orig'},
+      {id:'c10',name:'Control remoto / fob',sub:'Compatible múltiples marcas',tag:'univ'},
+    ],
+    prices:{}
+  },
+  {
+    id:'prog_aft',title:'Programación — Aftermarket',note:'',open:true,
+    tag:'aft',
+    items:[
+      {id:'pa1',name:'Transponder aftermarket',sub:'Sin carcasa',tag:'aft'},
+      {id:'pa2',name:'Control remoto aftermarket',sub:'Con carcasa y botones',tag:'aft'},
+      {id:'pa3',name:'Smart key aftermarket',sub:'Proximidad / push-start',tag:'aft'},
+    ],
+    prices:{}
+  },
+  {
+    id:'prog_orig',title:'Programación — Original OEM',note:'',open:true,
+    tag:'orig',
+    items:[
+      {id:'po1',name:'Transponder original',sub:'Llave de agencia con chip',tag:'orig'},
+      {id:'po2',name:'Control remoto original',sub:'Fob de agencia',tag:'orig'},
+      {id:'po3',name:'Smart key original',sub:'Llave inteligente OEM',tag:'orig'},
+    ],
+    prices:{}
+  },
+  {
+    id:'prog_univ',title:'Programación — Universal',note:'',open:true,
+    tag:'univ',
+    items:[
+      {id:'pu1',name:'Universal básica',sub:'Compatible múltiples marcas',tag:'univ'},
+      {id:'pu2',name:'Universal multimarca',sub:'Con botones de pánico/trunk',tag:'univ'},
+    ],
+    prices:{}
+  },
+  {
+    id:'pins',title:'PINs de agencia',note:'Costo que pagamos a la agencia para obtener el PIN de corte. Sin margen.',
+    open:true,isCost:true,agencies:true,
+    agencyPrices:{VW:'',Nissan:'',Ford:'',GM:'',Dodge:''},
+    items:[],prices:{}
+  },
+  {
+    id:'prog_dealer',title:'Programación de agencia (dealer)',note:'El dealer se conecta al vehículo para programar. Nos cobran tokens por sesión. Costo directo.',
+    open:true,isCost:true,agencies:true,
+    agencyPrices:{VW:'',Nissan:'',Ford:'',GM:'',Dodge:''},
+    items:[],prices:{}
+  },
+  {
+    id:'mant',title:'Mantenimiento y reparación de llaves',note:'',open:true,
+    isMant:true,
+    items:[
+      {id:'m1',name:'Reparación de llave existente',sub:'Carcasa, botones, contactos'},
+      {id:'m2',name:'Cambio de batería',sub:'CR2032 · CR2016'},
+      {id:'m3',name:'Cambio de carcasa',sub:'Sin reprogramación'},
+      {id:'m4',name:'Rango diagnóstico / misc.',isMantRange:true},
+    ],
+    mantMin:{m1:25,m2:10,m3:15,m4:15},
+    mantMax:{m1:75,m2:20,m3:40,m4:75},
+    prices:{}
+  },
+];
+
+let data = [];
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const saved = JSON.parse(raw);
+      data = mergeData(DEFAULT_DATA, saved);
+    } else {
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+  } catch(e){
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+}
+
+function mergeData(def, saved){
+  const result = JSON.parse(JSON.stringify(def));
+  result.forEach(cat => {
+    const sc = saved.find(s=>s.id===cat.id);
+    if(!sc) return;
+    if(sc.prices) Object.assign(cat.prices, sc.prices);
+    if(sc.agencyPrices) Object.assign(cat.agencyPrices||{}, sc.agencyPrices);
+    if(sc.open !== undefined) cat.open = sc.open;
+    if(sc.extraItems) sc.extraItems.forEach(ei => { cat.items.push(ei); cat.prices[ei.id]=sc.prices[ei.id]||''; });
+  });
+  return result;
+}
+
+function saveData(){
+  const toSave = data.map(cat => {
+    const base = {id:cat.id, prices:{...cat.prices}, open:cat.open};
+    if(cat.agencyPrices) base.agencyPrices = {...cat.agencyPrices};
+    const defaultCat = DEFAULT_DATA.find(d=>d.id===cat.id);
+    const defaultIds = defaultCat ? defaultCat.items.map(i=>i.id) : [];
+    const extra = cat.items.filter(i=>!defaultIds.includes(i.id));
+    if(extra.length) base.extraItems = extra;
+    return base;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  const badge = document.getElementById('save-badge');
+  badge.classList.add('show');
+  setTimeout(()=>badge.classList.remove('show'), 2000);
+}
+
+function getIntangTotal(){
+  const ic = data.find(c=>c.id==='intang_vals');
+  if(!ic) return 0;
+  return ic.items.reduce((s,i)=>s+(parseFloat(ic.prices[i.id])||0),0);
+}
+
+function renderIntang(){
+  const ic = data.find(c=>c.id==='intang_vals');
+  const el = document.getElementById('intang-rows');
+  el.innerHTML='';
+  ic.items.forEach(item=>{
+    const row=document.createElement('div');
+    row.className='intang-val-row';
+    row.innerHTML=`<span class="intang-val-name">${item.name}</span>
+    <div class="pf"><span class="ps">$</span>
+    <input class="pi" type="number" min="0" placeholder="0.00" value="${ic.prices[item.id]||''}" data-iid="${item.id}"/></div>`;
+    el.appendChild(row);
+  });
+  el.querySelectorAll('.pi').forEach(inp=>{
+    inp.addEventListener('input',e=>{
+      ic.prices[e.target.dataset.iid]=e.target.value;
+      saveData(); calcUpdate();
+    });
+  });
+}
+
+function renderSections(){
+  const el = document.getElementById('sections');
+  el.innerHTML='';
+  data.filter(c=>!c.isIntangVals).forEach((cat,ci)=>{
+    const actualCi = data.indexOf(cat);
+    const sec=document.createElement('div');
+    sec.className='section';
+
+    const hdr=document.createElement('div');
+    hdr.className='sec-header';
+    const tagHtml = cat.tag && TAGS[cat.tag] ? `<span class="tag ${TAGS[cat.tag].cls}">${TAGS[cat.tag].label}</span>`:'';
+    hdr.innerHTML=`<div class="sec-left">${tagHtml}<div><div class="sec-title">${cat.title}</div>${cat.note?`<div class="sec-note">${cat.note}</div>`:''}</div></div><span class="chevron ${cat.open!==false?'open':''}">▾</span>`;
+    hdr.addEventListener('click',()=>{
+      cat.open=!(cat.open!==false);
+      body.style.display=cat.open!==false?'':'none';
+      hdr.querySelector('.chevron').className='chevron'+(cat.open!==false?' open':'');
+      saveData();
+    });
+    sec.appendChild(hdr);
+
+    const body=document.createElement('div');
+    body.className='sec-body';
+    body.style.display=cat.open!==false?'':'none';
+
+    if(cat.agencies){
+      AGENCIES.forEach(ag=>{
+        const row=document.createElement('div');
+        row.className='agency-row';
+        row.innerHTML=`<span class="ag-name">${ag}</span><span class="ag-note">costo directo a agencia</span>
+        <span class="tag tag-cost">Costo agencia</span>
+        <div class="pf"><span class="ps">$</span><input class="price cost" type="number" min="0" placeholder="0.00" value="${cat.agencyPrices[ag]||''}" data-cat="${actualCi}" data-ag="${ag}"/></div>`;
+        body.appendChild(row);
+      });
+    }
+
+    if(cat.isMant){
+      cat.items.forEach((item,ii)=>{
+        const row=document.createElement('div');
+        row.className='mant-row';
+        if(item.isMantRange){
+          const mn=cat.mantMin[item.id]||15;
+          const mx=cat.mantMax[item.id]||75;
+          const cur=parseFloat(cat.prices[item.id])||mn;
+          row.innerHTML=`<div class="mant-name">${item.name}${item.sub?`<div class="mant-sub">${item.sub}</div>`:''}</div>
+          <span class="range-bounds">$${mn}</span>
+          <input class="mrange" type="range" min="${mn}" max="${mx}" step="1" value="${cur}" data-cat="${actualCi}" data-item="${item.id}"/>
+          <span class="range-bounds">$${mx}</span>
+          <span class="mval" id="mv-${item.id}">$${cur}</span>
+          <button class="del" data-cat="${actualCi}" data-ii="${ii}">✕</button>`;
+        } else {
+          row.innerHTML=`<div class="mant-name">${item.name}${item.sub?`<div class="mant-sub">${item.sub}</div>`:''}</div>
+          <div class="pf"><span class="ps">$</span><input class="price" type="number" min="0" placeholder="0.00" value="${cat.prices[item.id]||''}" data-cat="${actualCi}" data-item="${item.id}"/></div>
+          <button class="del" data-cat="${actualCi}" data-ii="${ii}">✕</button>`;
+        }
+        body.appendChild(row);
+      });
+    } else {
+      cat.items.forEach((item,ii)=>{
+        const row=document.createElement('div');
+        row.className='row';
+        const tagH=item.tag&&TAGS[item.tag]?`<span class="tag ${TAGS[item.tag].cls}">${TAGS[item.tag].label}</span>`:'<span></span>';
+        const costCls=cat.isCost?' cost':'';
+        row.innerHTML=`<div><div class="svc-name">${item.name}</div>${item.sub?`<div class="svc-sub">${item.sub}</div>`:''}</div>
+        ${tagH}
+        <div class="pf"><span class="ps">$</span><input class="price${costCls}" type="number" min="0" placeholder="0.00" value="${cat.prices[item.id]||''}" data-cat="${actualCi}" data-item="${item.id}"/></div>
+        <button class="del" data-cat="${actualCi}" data-ii="${ii}">✕</button>`;
+        body.appendChild(row);
+      });
+    }
+
+    const addRow=document.createElement('div');
+    addRow.className='add-row';
+    addRow.innerHTML=`<input class="add-inp" placeholder="+ Agregar servicio..." data-cat="${actualCi}"/>
+    <button class="add-btn" data-cat="${actualCi}">Agregar</button>`;
+    body.appendChild(addRow);
+    sec.appendChild(body);
+    el.appendChild(sec);
+  });
+
+  document.querySelectorAll('input.price[data-item]').forEach(inp=>{
+    inp.addEventListener('input',e=>{
+      data[e.target.dataset.cat].prices[e.target.dataset.item]=e.target.value;
+      saveData(); calcUpdate();
+    });
+  });
+  document.querySelectorAll('input.price[data-ag]').forEach(inp=>{
+    inp.addEventListener('input',e=>{
+      data[e.target.dataset.cat].agencyPrices[e.target.dataset.ag]=e.target.value;
+      saveData();
+    });
+  });
+  document.querySelectorAll('input.mrange').forEach(inp=>{
+    inp.addEventListener('input',e=>{
+      const ci=e.target.dataset.cat, id=e.target.dataset.item;
+      data[ci].prices[id]=e.target.value;
+      const mv=document.getElementById('mv-'+id);
+      if(mv) mv.textContent='$'+e.target.value;
+      saveData(); calcUpdate();
+    });
+  });
+  document.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const ci=parseInt(btn.dataset.cat), ii=parseInt(btn.dataset.ii);
+      const id=data[ci].items[ii].id;
+      data[ci].items.splice(ii,1);
+      delete data[ci].prices[id];
+      saveData(); renderSections(); updateCalcSelects();
+    });
+  });
+  document.querySelectorAll('.add-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const ci=btn.dataset.cat;
+      const inp=document.querySelector(`.add-inp[data-cat="${ci}"]`);
+      const name=inp.value.trim(); if(!name)return;
+      const id='u'+(++uid);
+      data[ci].items.push({id,name});
+      data[ci].prices[id]='';
+      inp.value='';
+      saveData(); renderSections(); updateCalcSelects();
+    });
+  });
+  document.querySelectorAll('.add-inp').forEach(inp=>{
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Enter') document.querySelector(`.add-btn[data-cat="${inp.dataset.cat}"]`).click();
+    });
+  });
+
+  updateCalcSelects();
+}
+
+function updateCalcSelects(){
+  const cs=document.getElementById('calc-cat');
+  const prev=cs.value;
+  cs.innerHTML='<option value="">— selecciona —</option>';
+  data.forEach((cat,ci)=>{
+    if(cat.isIntangVals||cat.agencies||cat.items.length===0) return;
+    const o=document.createElement('option');
+    o.value=ci; o.textContent=cat.title;
+    cs.appendChild(o);
+  });
+  if(prev) cs.value=prev;
+  calcSvcs();
+}
+
+function calcSvcs(){
+  const cs=document.getElementById('calc-cat');
+  const sv=document.getElementById('calc-svc');
+  sv.innerHTML='<option value="">— selecciona servicio —</option>';
+  const ci=cs.value; if(!ci) return;
+  data[parseInt(ci)].items.forEach(item=>{
+    const tag=item.tag&&TAGS[item.tag]?` [${TAGS[item.tag].label}]`:'';
+    const o=document.createElement('option');
+    o.value=item.id; o.textContent=item.name+tag;
+    sv.appendChild(o);
+  });
+  calcUpdate();
+}
+
+function calcUpdate(){
+  const ci=document.getElementById('calc-cat').value;
+  const itemId=document.getElementById('calc-svc').value;
+  const be=document.getElementById('res-base');
+  const te=document.getElementById('res-total');
+  if(!ci||!itemId){be.textContent='—';te.textContent='—';return;}
+  const base=parseFloat(data[parseInt(ci)].prices[itemId]||0);
+  const intang=getIntangTotal();
+  const total=base+intang;
+  const fmt=v=>'$'+v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+  be.textContent=base?fmt(base):'—';
+  te.textContent=(base||intang)?fmt(total):'—';
+}
+
+function limpiar(){
+  if(!confirm('¿Borrar todos los precios? Esta acción no se puede deshacer.')) return;
+  data.forEach(cat=>{
+    Object.keys(cat.prices).forEach(k=>cat.prices[k]='');
+    if(cat.agencyPrices) Object.keys(cat.agencyPrices).forEach(k=>cat.agencyPrices[k]='');
+  });
+  saveData(); renderIntang(); renderSections(); calcUpdate();
+}
+
+function exportarTexto(){
+  const intang=getIntangTotal();
+  let txt='LISTA DE PRECIOS — CERRAJERÍA AUTOMOTRIZ\nProveedor para AutoMart · Precios en USD\n\n';
+  txt+='LO QUE INCLUYE CADA LLAVE:\n';
+  txt+='  • Garantía limitada de 3 años\n  • Servicio a domicilio\n  • Mismo día o siguiente\n  • Procuración y entrega de llave\n\n';
+  txt+='NOTA: PINs y Programación de agencia son costos directos sin margen de ganancia.\n\n';
+  data.filter(c=>!c.isIntangVals).forEach(cat=>{
+    txt+=cat.title.toUpperCase()+'\n';
+    if(cat.agencies){
+      AGENCIES.forEach(ag=>{
+        const p=cat.agencyPrices?.[ag];
+        txt+=`  ${ag}: ${p?'$'+parseFloat(p).toFixed(2):'(pendiente)'}\n`;
+      });
+    }
+    cat.items.forEach(item=>{
+      const tag=item.tag&&TAGS[item.tag]?` [${TAGS[item.tag].label}]`:'';
+      const p=cat.prices[item.id];
+      const base=parseFloat(p||0);
+      const totalStr=p&&intang?' → Total: $'+(base+intang).toFixed(2):'';
+      txt+=`  ${item.name}${tag}: ${p?'$'+base.toFixed(2):'(pendiente)'}${totalStr}\n`;
+    });
+    txt+='\n';
+  });
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn=document.querySelector('.btn.primary');
+    const orig=btn.innerHTML;
+    btn.textContent='✓ Copiado';
+    setTimeout(()=>btn.innerHTML=orig,2000);
+  });
+}
+
+document.getElementById('calc-cat').addEventListener('change',()=>{calcSvcs();calcUpdate();});
+document.getElementById('calc-svc').addEventListener('change',calcUpdate);
+
+loadData();
+renderIntang();
+renderSections();
+calcUpdate();
+</script>
+</body>
+</html>
