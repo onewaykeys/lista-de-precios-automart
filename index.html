@@ -4,25 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lista de Precios de Cerrajeros</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0f0f0f;
-    --surface: #181818;
-    --surface2: #222222;
-    --border: #2e2e2e;
-    --border2: #3a3a3a;
-    --text: #f0ede8;
-    --text2: #999;
-    --text3: #555;
-    --accent: #d4a843;
-    --accent2: #b8903a;
-    --green: #4caf7d;
-    --green-bg: #0d2318;
-    --red: #e05c5c;
-    --red-bg: #220f0f;
+    --bg: #f0f4fa;
+    --surface: #ffffff;
+    --surface2: #e8eef8;
+    --border: #d0daf0;
+    --border2: #b8c8e8;
+    --text: #0d1b3e;
+    --text2: #4a5f8a;
+    --text3: #8a9fc0;
+    --accent: #1a4fd6;
+    --accent-light: #e8eeff;
+    --accent-hover: #1540b8;
+    --green: #1a7a45;
+    --green-bg: #e6f5ec;
+    --red: #c0271a;
+    --red-bg: #fdecea;
     --font-display: 'Syne', sans-serif;
     --font-mono: 'DM Mono', monospace;
   }
@@ -32,208 +33,213 @@
     color: var(--text);
     font-family: var(--font-display);
     min-height: 100vh;
-    padding: 0;
   }
 
   header {
-    border-bottom: 1px solid var(--border);
-    padding: 2rem 2.5rem 1.5rem;
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 2rem 3rem 1.75rem;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
+    box-shadow: 0 2px 12px rgba(26,79,214,0.07);
   }
 
+  .header-left { display: flex; align-items: center; gap: 1.25rem; }
+
+  .key-icon {
+    width: 52px; height: 52px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .key-icon svg { width: 28px; height: 28px; stroke: #fff; fill: none; stroke-width: 2; }
+
   .header-left h1 {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 26px;
+    font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--text);
     line-height: 1.1;
   }
 
-  .header-left h1 span {
-    color: var(--accent);
-  }
+  .header-left h1 span { color: var(--accent); }
 
   .header-left p {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text3);
-    margin-top: 6px;
-    letter-spacing: 0.04em;
+    margin-top: 5px;
   }
 
-  .header-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
+  .header-actions { display: flex; gap: 10px; align-items: center; }
 
   button {
     font-family: var(--font-display);
     cursor: pointer;
-    border: 1px solid var(--border2);
-    background: transparent;
+    border: 1.5px solid var(--border2);
+    background: var(--surface);
     color: var(--text);
-    border-radius: 6px;
-    font-size: 13px;
-    padding: 8px 14px;
-    transition: background 0.15s, border-color 0.15s;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 11px 20px;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
-  button:hover { background: var(--surface2); border-color: #555; }
+  button:hover { background: var(--surface2); border-color: var(--accent); }
   button:active { transform: scale(0.98); }
 
   .btn-accent {
     background: var(--accent);
-    color: #111;
+    color: #fff;
     border-color: var(--accent);
-    font-weight: 600;
   }
-  .btn-accent:hover { background: var(--accent2); border-color: var(--accent2); }
+  .btn-accent:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 
   .btn-save {
-    background: #1a2e1a;
+    background: var(--green-bg);
     color: var(--green);
-    border-color: #2a4a2a;
+    border-color: #a8ddc0;
+    font-weight: 600;
   }
-  .btn-save:hover { background: #223a22; }
+  .btn-save:hover { background: #d0eddb; }
 
-  main { padding: 2rem 2.5rem; }
+  main { padding: 2.5rem 3rem; }
 
   .stats-bar {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 2.5rem;
   }
 
   .stat {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 1px 6px rgba(26,79,214,0.05);
   }
 
   .stat-label {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text3);
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .stat-value {
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--text);
   }
 
+  .stat-value.blue { color: var(--accent); }
   .stat-value.green { color: var(--green); }
-  .stat-value.accent { color: var(--accent); }
 
   /* Form */
   .form-panel {
     display: none;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
+    border: 1.5px solid var(--accent);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(26,79,214,0.08);
   }
 
   .form-panel.open { display: block; }
 
   .form-title {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
     color: var(--accent);
     font-family: var(--font-mono);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
 
   .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-    margin-bottom: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 14px;
   }
 
   .field label {
     display: block;
     font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text3);
-    letter-spacing: 0.05em;
-    margin-bottom: 5px;
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+    font-weight: 500;
   }
 
-  .field input, .field textarea, .field select {
+  .field input {
     width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: 6px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
     color: var(--text);
     font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 8px 10px;
+    font-size: 15px;
+    padding: 11px 14px;
     outline: none;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
 
-  .field input:focus, .field textarea:focus {
+  .field input:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(26,79,214,0.12);
   }
 
   .field input::placeholder { color: var(--text3); }
 
-  .form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
   .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    margin-top: 4px;
+    gap: 10px;
+    margin-top: 6px;
   }
 
   /* Table */
   .table-wrap {
     overflow-x: auto;
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(26,79,214,0.06);
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 15px;
   }
 
   thead tr {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
+    background: var(--accent);
   }
 
   th {
     font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
+    font-size: 12px;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--text3);
-    padding: 10px 14px;
+    color: rgba(255,255,255,0.85);
+    padding: 16px 20px;
     text-align: left;
     font-weight: 500;
     white-space: nowrap;
@@ -242,58 +248,74 @@
   th.price-col { text-align: right; }
 
   tbody tr {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1.5px solid var(--border);
     transition: background 0.1s;
   }
 
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface); }
+  tbody tr:nth-child(even) { background: #f7f9fe; }
+  tbody tr:hover { background: var(--accent-light); }
 
   td {
-    padding: 11px 14px;
+    padding: 16px 20px;
     vertical-align: middle;
-    color: var(--text);
   }
 
   .td-cerrajero {
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     color: var(--accent);
   }
 
   .td-servicio {
+    font-size: 15px;
     color: var(--text2);
-    max-width: 220px;
   }
 
   .td-price {
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 500;
     text-align: right;
+    color: var(--text);
     white-space: nowrap;
   }
 
   .td-nuestro {
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 500;
     text-align: right;
     white-space: nowrap;
   }
 
+  .comparison-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
+
   .diff-badge {
     display: inline-block;
     font-family: var(--font-mono);
-    font-size: 11px;
-    padding: 2px 7px;
-    border-radius: 4px;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 6px;
     font-weight: 500;
     white-space: nowrap;
   }
 
-  .diff-cheaper { background: var(--green-bg); color: var(--green); }
-  .diff-expensive { background: var(--red-bg); color: var(--red); }
-  .diff-same { background: #1a1a1a; color: var(--text3); }
+  .diff-cheaper { background: var(--green-bg); color: var(--green); border: 1px solid #a8ddc0; }
+  .diff-expensive { background: var(--red-bg); color: var(--red); border: 1px solid #f5bcb8; }
+  .diff-same { background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
+
+  .td-notas {
+    font-size: 13px;
+    color: var(--text3);
+    font-style: italic;
+    max-width: 180px;
+  }
 
   .td-actions {
     text-align: right;
@@ -301,64 +323,57 @@
   }
 
   .td-actions button {
-    padding: 5px 8px;
-    font-size: 12px;
-    border-color: transparent;
-    color: var(--text3);
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-color: var(--border);
+    color: var(--text2);
   }
 
-  .td-actions button:hover { color: var(--text); border-color: var(--border2); }
+  .td-actions button:hover { color: var(--accent); border-color: var(--accent); }
+  .td-actions .btn-del { color: var(--red); }
+  .td-actions .btn-del:hover { border-color: var(--red); background: var(--red-bg); }
 
   .empty-state {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 5rem 2rem;
     color: var(--text3);
   }
 
   .empty-state svg {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 12px;
+    width: 52px; height: 52px;
+    margin-bottom: 16px;
     opacity: 0.3;
+    stroke: var(--accent);
   }
 
-  .empty-state p { font-size: 14px; }
+  .empty-state p { font-size: 16px; color: var(--text2); }
 
-  .comparison-col {
-    min-width: 160px;
-  }
+  .comparison-col { min-width: 200px; }
 
-  .comparison-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    align-items: flex-end;
-  }
-
-  /* Toast */
   .toast {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    color: var(--text);
+    bottom: 28px;
+    right: 28px;
+    background: var(--accent);
+    color: #fff;
     font-family: var(--font-mono);
-    font-size: 13px;
-    padding: 10px 16px;
-    border-radius: 8px;
+    font-size: 14px;
+    padding: 12px 20px;
+    border-radius: 10px;
     opacity: 0;
     transform: translateY(8px);
     transition: opacity 0.2s, transform 0.2s;
     pointer-events: none;
     z-index: 100;
+    box-shadow: 0 4px 20px rgba(26,79,214,0.25);
   }
   .toast.show { opacity: 1; transform: translateY(0); }
 
-  @media (max-width: 600px) {
-    header { padding: 1.25rem; }
+  @media (max-width: 700px) {
+    header { padding: 1.25rem 1.25rem; }
     main { padding: 1.25rem; }
-    th, td { padding: 8px 10px; }
+    th, td { padding: 12px 12px; }
   }
 </style>
 </head>
@@ -366,8 +381,13 @@
 
 <header>
   <div class="header-left">
-    <h1>Lista de Precios de <span>Cerrajeros</span></h1>
-    <p id="last-saved">Sin guardar aún</p>
+    <div class="key-icon">
+      <svg viewBox="0 0 24 24"><path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div>
+      <h1>Lista de Precios de <span>Cerrajeros</span></h1>
+      <p id="last-saved">Sin guardar aún — usa el botón para exportar</p>
+    </div>
   </div>
   <div class="header-actions">
     <button onclick="showForm()">&#43; Agregar entrada</button>
@@ -378,19 +398,19 @@
 <main>
   <div class="stats-bar">
     <div class="stat">
-      <div class="stat-label">Entradas</div>
+      <div class="stat-label">Total de entradas</div>
       <div class="stat-value" id="stat-count">0</div>
     </div>
     <div class="stat">
       <div class="stat-label">Precio prom. (ellos)</div>
-      <div class="stat-value accent" id="stat-avg-them">—</div>
+      <div class="stat-value blue" id="stat-avg-them">—</div>
     </div>
     <div class="stat">
       <div class="stat-label">Precio prom. (nosotros)</div>
       <div class="stat-value green" id="stat-avg-us">—</div>
     </div>
     <div class="stat">
-      <div class="stat-label">Diferencia prom.</div>
+      <div class="stat-label">Diferencia promedio</div>
       <div class="stat-value" id="stat-diff">—</div>
     </div>
   </div>
@@ -406,8 +426,6 @@
         <label>Servicio</label>
         <input type="text" id="inp-servicio" placeholder="Ej. Apertura de puerta" />
       </div>
-    </div>
-    <div class="form-row">
       <div class="field">
         <label>Su precio ($)</label>
         <input type="number" id="inp-precio" placeholder="0.00" min="0" step="0.01" />
@@ -442,10 +460,10 @@
       <tbody id="table-body"></tbody>
     </table>
     <div class="empty-state" id="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
       </svg>
-      <p>Sin entradas aún. Haz clic en <strong>Agregar entrada</strong> para comenzar.</p>
+      <p>Sin entradas aún. Haz clic en <strong>+ Agregar entrada</strong> para comenzar.</p>
     </div>
   </div>
 </main>
@@ -453,9 +471,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// DATA — injected on export
 var DATA = [];
-
 var editId = null;
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
@@ -481,11 +497,7 @@ function showForm(id) {
       document.getElementById('inp-notas').value = e.notas || '';
     }
   } else {
-    document.getElementById('inp-cerrajero').value = '';
-    document.getElementById('inp-servicio').value = '';
-    document.getElementById('inp-precio').value = '';
-    document.getElementById('inp-nuestro').value = '';
-    document.getElementById('inp-notas').value = '';
+    ['inp-cerrajero','inp-servicio','inp-precio','inp-nuestro','inp-notas'].forEach(function(id){ document.getElementById(id).value = ''; });
   }
   setTimeout(function(){ document.getElementById('inp-cerrajero').focus(); }, 50);
 }
@@ -510,18 +522,19 @@ function saveEntry() {
 
   if (editId) {
     var idx = DATA.findIndex(function(x){ return x.id === editId; });
-    if (idx > -1) DATA[idx] = { id: editId, cerrajero, servicio, precio, nuestro, notas };
+    if (idx > -1) DATA[idx] = { id: editId, cerrajero: cerrajero, servicio: servicio, precio: precio, nuestro: nuestro, notas: notas };
   } else {
-    DATA.push({ id: uid(), cerrajero, servicio, precio, nuestro, notas });
+    DATA.push({ id: uid(), cerrajero: cerrajero, servicio: servicio, precio: precio, nuestro: nuestro, notas: notas });
   }
 
   cancelForm();
   render();
-  showToast(editId ? 'Entrada actualizada' : 'Entrada guardada');
+  showToast(editId ? 'Entrada actualizada ✓' : 'Entrada guardada ✓');
   editId = null;
 }
 
 function deleteEntry(id) {
+  if (!confirm('¿Eliminar esta entrada?')) return;
   DATA = DATA.filter(function(x){ return x.id !== id; });
   render();
   showToast('Entrada eliminada');
@@ -529,7 +542,7 @@ function deleteEntry(id) {
 
 function getDiff(precio, nuestro) {
   if (precio === '' || nuestro === '' || isNaN(precio) || isNaN(nuestro)) return null;
-  return nuestro - precio;
+  return parseFloat(nuestro) - parseFloat(precio);
 }
 
 function render() {
@@ -540,79 +553,57 @@ function render() {
     tbody.innerHTML = '';
     empty.style.display = 'block';
     document.getElementById('stat-count').textContent = '0';
-    document.getElementById('stat-avg-them').textContent = '—';
-    document.getElementById('stat-avg-us').textContent = '—';
-    document.getElementById('stat-diff').textContent = '—';
+    ['stat-avg-them','stat-avg-us','stat-diff'].forEach(function(id){ document.getElementById(id).textContent = '—'; });
+    document.getElementById('stat-diff').style.color = '';
     return;
   }
 
   empty.style.display = 'none';
 
-  var rows = DATA.map(function(e) {
+  tbody.innerHTML = DATA.map(function(e) {
     var diff = getDiff(e.precio, e.nuestro);
     var diffHtml = '';
     if (diff !== null) {
       if (Math.abs(diff) < 0.01) {
         diffHtml = '<span class="diff-badge diff-same">Igual</span>';
       } else if (diff < 0) {
-        diffHtml = '<span class="diff-badge diff-cheaper">-$' + Math.abs(diff).toFixed(2) + ' más barato</span>';
+        diffHtml = '<span class="diff-badge diff-cheaper">&#9660; $' + Math.abs(diff).toFixed(2) + ' más barato</span>';
       } else {
-        diffHtml = '<span class="diff-badge diff-expensive">+$' + diff.toFixed(2) + ' más caro</span>';
+        diffHtml = '<span class="diff-badge diff-expensive">&#9650; $' + diff.toFixed(2) + ' más caro</span>';
       }
     }
-
     return '<tr>' +
       '<td class="td-cerrajero">' + esc(e.cerrajero) + '</td>' +
       '<td class="td-servicio">' + esc(e.servicio) + '</td>' +
       '<td class="td-price">' + fmt(e.precio) + '</td>' +
       '<td class="td-nuestro comparison-col"><div class="comparison-inner">' + fmt(e.nuestro) + diffHtml + '</div></td>' +
-      '<td style="color:var(--text2);font-size:12px;">' + esc(e.notas) + '</td>' +
+      '<td class="td-notas">' + esc(e.notas) + '</td>' +
       '<td class="td-actions">' +
         '<button onclick="showForm(\'' + e.id + '\')">&#9998; Editar</button> ' +
-        '<button onclick="deleteEntry(\'' + e.id + '\')" style="color:var(--red);">&#215; Borrar</button>' +
+        '<button class="btn-del" onclick="deleteEntry(\'' + e.id + '\')">&#215; Borrar</button>' +
       '</td>' +
     '</tr>';
   }).join('');
 
-  tbody.innerHTML = rows;
-
-  // Stats
   document.getElementById('stat-count').textContent = DATA.length;
 
-  var themPrices = DATA.filter(function(e){ return e.precio !== ''; }).map(function(e){ return parseFloat(e.precio); });
-  var usPrices = DATA.filter(function(e){ return e.nuestro !== ''; }).map(function(e){ return parseFloat(e.nuestro); });
+  var themPrices = DATA.filter(function(e){ return e.precio !== '' && !isNaN(e.precio); }).map(function(e){ return parseFloat(e.precio); });
+  var usPrices = DATA.filter(function(e){ return e.nuestro !== '' && !isNaN(e.nuestro); }).map(function(e){ return parseFloat(e.nuestro); });
 
-  if (themPrices.length) {
-    var avg = themPrices.reduce(function(a,b){ return a+b; }, 0) / themPrices.length;
-    document.getElementById('stat-avg-them').textContent = '$' + avg.toFixed(2);
-  } else {
-    document.getElementById('stat-avg-them').textContent = '—';
-  }
-
-  if (usPrices.length) {
-    var avgUs = usPrices.reduce(function(a,b){ return a+b; }, 0) / usPrices.length;
-    document.getElementById('stat-avg-us').textContent = '$' + avgUs.toFixed(2);
-  } else {
-    document.getElementById('stat-avg-us').textContent = '—';
-  }
+  document.getElementById('stat-avg-them').textContent = themPrices.length ? '$' + (themPrices.reduce(function(a,b){return a+b;},0)/themPrices.length).toFixed(2) : '—';
+  document.getElementById('stat-avg-us').textContent = usPrices.length ? '$' + (usPrices.reduce(function(a,b){return a+b;},0)/usPrices.length).toFixed(2) : '—';
 
   if (themPrices.length && usPrices.length) {
-    var avgThem2 = themPrices.reduce(function(a,b){ return a+b; }, 0) / themPrices.length;
-    var avgUs2 = usPrices.reduce(function(a,b){ return a+b; }, 0) / usPrices.length;
-    var d = avgUs2 - avgThem2;
-    var statDiffEl = document.getElementById('stat-diff');
-    if (Math.abs(d) < 0.01) {
-      statDiffEl.textContent = 'Igual';
-      statDiffEl.style.color = 'var(--text2)';
-    } else if (d < 0) {
-      statDiffEl.textContent = '-$' + Math.abs(d).toFixed(2);
-      statDiffEl.style.color = 'var(--green)';
-    } else {
-      statDiffEl.textContent = '+$' + d.toFixed(2);
-      statDiffEl.style.color = 'var(--red)';
-    }
+    var avgT = themPrices.reduce(function(a,b){return a+b;},0)/themPrices.length;
+    var avgU = usPrices.reduce(function(a,b){return a+b;},0)/usPrices.length;
+    var d = avgU - avgT;
+    var el = document.getElementById('stat-diff');
+    if (Math.abs(d) < 0.01) { el.textContent = 'Igual'; el.style.color = ''; }
+    else if (d < 0) { el.textContent = '-$' + Math.abs(d).toFixed(2); el.style.color = 'var(--green)'; }
+    else { el.textContent = '+$' + d.toFixed(2); el.style.color = 'var(--red)'; }
   } else {
     document.getElementById('stat-diff').textContent = '—';
+    document.getElementById('stat-diff').style.color = '';
   }
 }
 
@@ -625,13 +616,12 @@ function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 2200);
+  setTimeout(function(){ t.classList.remove('show'); }, 2400);
 }
 
 function exportFile() {
   var jsonData = JSON.stringify(DATA);
   var html = document.documentElement.outerHTML;
-  // Replace the DATA line with updated data
   var updated = html.replace(/var DATA = \[.*?\];/s, 'var DATA = ' + jsonData + ';');
   var blob = new Blob([updated], { type: 'text/html;charset=utf-8' });
   var a = document.createElement('a');
@@ -640,8 +630,8 @@ function exportFile() {
   a.click();
   URL.revokeObjectURL(a.href);
   var now = new Date();
-  document.getElementById('last-saved').textContent = 'Guardado: ' + now.toLocaleDateString('es-MX') + ' ' + now.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'});
-  showToast('Archivo descargado — reemplaza el anterior');
+  document.getElementById('last-saved').textContent = 'Guardado: ' + now.toLocaleDateString('es-MX') + ' a las ' + now.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'});
+  showToast('Archivo descargado — reemplaza el anterior ✓');
 }
 
 render();
